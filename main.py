@@ -146,47 +146,28 @@ def main(page: ft.Page):
     page.update()
 
     def update_callback(iter_num, current_best_path, current_pheromones):
-        """
-        Called at the end of each iteration of the Ant Colony Optimization algorithm.
-        
-        Parameters
-        ----------
-        iter_num : int
-            The current iteration number.
-        current_best_path : tuple of int
-            The best path found so far with its length as the second element.
-        current_pheromones : list of lists of float
-            The pheromones matrix after the current iteration.
-        """
         nonlocal iteration, best_path, pheromones
 
-        # Mettre à jour les variables
+        # On met à jour les variables et l'UI
         iteration = iter_num
         best_path = current_best_path[0] if current_best_path else []
         pheromones = current_pheromones
-        # Fonction pour mettre à jour l'UI dans le thread principal
+
         async def update_ui():
             iteration_text.value = f"Itération: {iteration}"
             if best_path:
                 path_text.value = f"Meilleur chemin: {best_path} (longueur: {current_best_path[1]:.2f})"
 
-            # Mettre à jour les informations sur les phéromones
             if pheromones and len(pheromones) > 0:
                 avg_pheromone = sum(sum(row) for row in pheromones) / (len(nodes) * len(nodes))
                 pheromone_text.value = f"Phéromones moyennes: {avg_pheromone:.4f}"
 
             draw_graph()
 
-        # Exécuter la mise à jour dans le thread principal de Flet
+        # on exécute la mise à jour dans le thread principal de Flet
         page.run_task(update_ui)
 
     def start_algorithm(e):
-        """
-        Démarre l'algorithme des fourmis.
-        
-        Met à jour l'état de l'application pour indiquer que l'algorithme est en cours d'exécution.
-        Démare l'exécution de l'algorithme dans un thread.
-        """
         nonlocal running, stop_event
         if not running:
             running = True
@@ -198,24 +179,6 @@ def main(page: ft.Page):
             page.update()
             
             def run_ants():
-                """
-                Démare l'algorithme des fourmis.
-                
-                L'algorithme des fourmis est un algorithme d'optimisation qui consiste à
-                plusieurs fourmis qui partagent d'un point de départ et qui
-                cherchent à trouver le chemin le plus court entre le point de
-                départ et un point d'arrivée.
-                
-                Les paramètres de l'algorithme sont:
-                - n_ants: le nombre de fourmis.
-                - n_best: le nombre de fourmis qui sont pris en compte pour
-                  mettre à jour les phéromones.
-                - n_iterations: le nombre d'itérations.
-                - decay: le facteur de décroissance des phéromones.
-                - alpha: le poids de la phéromone lors de la prise de décision.
-                - beta: le poids de la distance lors de la prise de décision.
-                """
-        
                 try:
                     n_ants = int(ants_field.value)
                     n_best = int(best_field.value)
@@ -224,7 +187,6 @@ def main(page: ft.Page):
                     alpha = float(alpha_field.value)
                     beta = float(beta_field.value)
                 except ValueError:
-                    # Valeurs par défaut en cas d'erreur
                     n_ants = 30
                     n_best = 3
                     n_iterations = 200
@@ -242,18 +204,10 @@ def main(page: ft.Page):
                     beta=beta
                 )
                 colony.run(update_callback, stop_event)
-                # Finaliser dans le thread principal
+
                 async def finalize():
-                    """
-                    Finalize the Ant Colony Optimization algorithm.
-
-                    Called when the algorithm has finished its execution.
-
-                    Sets the running flag to False, enables the "Start" button, disables the "Stop" button, and updates the status text to "Terminé".
-                    """
                     nonlocal running
                     running = False
-                    # Enable the "Start" button and disable the "Stop" button
                     start_btn.disabled = False
                     stop_btn.disabled = True
                     # Update the status text
@@ -264,26 +218,19 @@ def main(page: ft.Page):
                 
                 page.run_task(finalize)
             
-            # Créer un thread pour exécuter l'algorithme des fourmis en arrière-plan de l'interface utilisateur
             thread = threading.Thread(target=run_ants)
-            # Démarrer le thread en tant que daemon pour qu'il se termine avec l'application
             thread.daemon = True
-            # Démarrer le thread
             thread.start()
 
 
     def stop_algorithm(e):
         nonlocal running
         running = False
-        # Set the stop event to signal the algorithm to stop
         stop_event.set()
-        # Disable the "Stop" button and enable the "Start" button
         start_btn.disabled = False
         stop_btn.disabled = True
-        # Update the status text
         status_text.value = "Arrêté"
         status_text.color = "red"
-        # Update the page
         page.update()
     
     def restart_graph(e):
