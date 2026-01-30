@@ -13,7 +13,6 @@ language_info:
   nbconvert_exporter: python
   pygments_lexer: ipython3
 ---
-
 # ants: a genetic algorithm
 
 +++
@@ -43,7 +42,9 @@ this latter metaphor is **a little more helpful** though in the context of the g
 is has been shown that finding *the* shortest path is an NP-problem, so it's untractable  
 but as explained in the video, the genetic algorithm finds reasonable paths, in that they do not differ much from the optimal one
 ```
-
+```{warning} Disclaimer
+For our project, we chose to find the shortest cycle possible (just like the traveling salesman problem).
+```
 +++
 
 ## ACO: a super useful resource
