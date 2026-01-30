@@ -5,6 +5,8 @@ import time
 import threading
 from fourmi import AntColony
 
+#nous avons décidé de faire notre propre interface et de ne pas utiliser ui.pym
+
 def main(page: ft.Page):
     
     page.title = "Algorithme de Colonie de Fourmis"
@@ -42,6 +44,7 @@ def main(page: ft.Page):
     path_text = ft.Text("Meilleur chemin: ", size=14)
     status_text = ft.Text("Prêt", size=14, color="green")
     
+    #on crée les noeuds
     def generer_nodes():
         nonlocal nodes, distances, pheromones
         try:
@@ -56,6 +59,7 @@ def main(page: ft.Page):
                 random.uniform(40, 460)
             ))
 
+        #on calcule la distence entre les points 
         def calculer_distances():
             distances = []
             for i in range(len(nodes)):
@@ -76,7 +80,8 @@ def main(page: ft.Page):
         
         # Initialiser la matrice des phéromones
         pheromones = [[1.0 for _ in range(len(nodes))] for _ in range(len(nodes))]
-    
+
+    #on fait apparaitre les traits reliants les noeuds    
     def create_line(x1, y1, x2, y2, color, thickness): #cette fontion sert a dessiner les lignes entre les noeuds
 
         dx = x2 - x1
@@ -93,6 +98,7 @@ def main(page: ft.Page):
             rotate=ft.Rotate(angle=angle, alignment=ft.alignment.Alignment(-1, 0))
         )
     
+    #on dessine le tout
     def draw_graph():
         shapes = []
         
@@ -112,8 +118,7 @@ def main(page: ft.Page):
                         )
                         shapes.append(line)
         
-        # dessin du meilleur chemin 
-
+        # on fait apparaitre le dessin du meilleur chemin
         if best_path:   
             chemin_complet = best_path + [best_path[0]] #on rajoute le retour au début                                
             for i in range(len(chemin_complet) - 1):
@@ -124,7 +129,6 @@ def main(page: ft.Page):
                     shapes.append(line)
         
         # dessin des noeuds 
-
         for i, (x, y) in enumerate(nodes):
             shapes.append(
                 ft.Container(
@@ -218,7 +222,7 @@ def main(page: ft.Page):
             thread.daemon = True
             thread.start()
 
-
+    #boutons pour pouvoir arreter l'algorithme
     def stop_algorithm(e):
         nonlocal running
         running = False
@@ -229,6 +233,7 @@ def main(page: ft.Page):
         status_text.color = "red"
         page.update()
     
+    #boutons pour pouvoir recommencer l'algorithme
     def restart_graph(e):
         nonlocal best_path, iteration, running
         running = False
