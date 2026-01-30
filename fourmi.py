@@ -58,5 +58,51 @@ class AntColony:
                 ville_suivante = self.choisir_ville_suivante(probabilites_mouvement)
                 chemin.append(ville_suivante)
             tous_chemins.append((chemin, self.calcul_distance_chemin(chemin)))
+
+    
+    def run(self, callback_maj, evenement_arret):
+        
+        for iteration in range(self.n_iterations):
+            if evenement_arret.is_set():
+                break
+            
+            # on génère tous les chemins pour trouver le meilleur
+            tous_chemins = self.generer_tous_chemins()
+            self.deposer_pheromones(tous_chemins)
+            self.meilleur_chemin = min(tous_chemins, key=lambda x: x[1])
+
+            if self.meilleur_chemin[1] < self.meilleure_distance:  # mise à jour de la meilleure distance
+                self.meilleure_distance = self.meilleur_chemin[1]
+            
+            self.pheromones = [[p * self.decroissance for p in ligne] for ligne in self.pheromones] #mise à jour des dépôts de phéromones
+
+            callback_maj(iteration, self.meilleur_chemin, self.pheromones)
+            
+            time.sleep(0.2*len(self.distances)/10) #on fait une pause avant chaque itération pour permettre la mise à jour des données
+
+if __name__ == "__main__":
+    distances = [
+        [0, 2, 9, 10],
+        [1, 0, 6, 4],
+        [15, 7, 0, 8],
+        [6, 3, 12, 0]
+    ]
+    
+    colonie_fourmis = AntColony(distances, n_fourmis=3, n_meilleurs=5, n_iterations=100, decroissance=0.95, alpha=1, beta=2) #on crée une instance de la classe
+    
+    def callback_maj(iteration, meilleur_chemin, pheromones):
+        
+        if iteration % 10 == 0:
+            print(f"Itération {iteration}: Meilleur chemin {meilleur_chemin} avec distance {colonie_fourmis.meilleure_distance}")
+            print("Matrice des phéromones:")
+            for ligne in pheromones:
+                print(ligne)
+
+    
+    evenement_arret = threading.Event()
+    
+    colonie_fourmis.run(callback_maj, evenement_arret)
+ 
+    print(f"Meilleur chemin trouvé : {colonie_fourmis.meilleur_chemin} avec une distance de {colonie_fourmis.meilleure_distance}")
     
     
