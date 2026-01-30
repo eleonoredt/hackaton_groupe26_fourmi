@@ -1,5 +1,7 @@
 import random
-
+import time
+import threading
+ 
 class AntColony:
 
     def __init__(self, distances, n_fourmis, n_meilleurs, n_iterations, decroissance, alpha : float=1, beta : float =2): 
