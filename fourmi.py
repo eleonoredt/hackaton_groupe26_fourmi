@@ -58,6 +58,7 @@ class AntColony:
                 ville_suivante = self.choisir_ville_suivante(probabilites_mouvement)
                 chemin.append(ville_suivante)
             tous_chemins.append((chemin, self.calcul_distance_chemin(chemin)))
+        return tous_chemins
 
     
     def run(self, callback_maj, evenement_arret):
@@ -79,6 +80,7 @@ class AntColony:
             callback_maj(iteration, self.meilleur_chemin, self.pheromones)
             
             time.sleep(0.2*len(self.distances)/10) #on fait une pause avant chaque itération pour permettre la mise à jour des données
+
 
 if __name__ == "__main__":
     distances = [
