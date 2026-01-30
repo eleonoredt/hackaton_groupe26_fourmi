@@ -20,5 +20,24 @@ class AntColony:
         for i in range(len(chemin) - 1):
             total += self.distances[chemin[i]][chemin[i+1]]
         return total
+
+    def calculer_probabilites_mouvement(self, chemin):
+        actuelle = chemin[-1]
+        probabilites = []
+        # Pour chaque ville, calculer la probabilité de mouvement
+        for ville in self.tous_indices:
+            # Si la ville est dans le chemin, la probabilité est nulle
+            if ville in chemin:
+                probabilites.append(0)
+            else:
+                # Phéromone^alpha * (1/distance)^beta
+                pheromone = self.pheromones[actuelle][ville] ** self.alpha
+                heuristique = (1.0 / self.distances[actuelle][ville]) ** self.beta
+                # Ajouter la probabilité au tableau
+                probabilites.append(pheromone * heuristique)
+        # Sommer les probabilités pour la normalisation
+        total = sum(probabilites)
+        # Retourner les probabilités normalisées
+        return [p / total for p in probabilites] if total > 0 else [0] * len(probabilites)
     
     
