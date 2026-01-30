@@ -114,17 +114,13 @@ def main(page: ft.Page):
         
         # dessin du meilleur chemin 
 
-        if best_path:                                   
-            for i in range(len(best_path) - 1):
-                start_idx = best_path[i]
-                end_idx = best_path[i + 1]
+        if best_path:   
+            chemin_complet = best_path + [best_path[0]] #on rajoute le retour au début                                
+            for i in range(len(chemin_complet) - 1):
+                start_idx = chemin_complet[i]
+                end_idx = chemin_complet[i + 1]
                 if start_idx < len(nodes) and end_idx < len(nodes):
-                    line = create_line(
-                        nodes[start_idx][0], nodes[start_idx][1],
-                        nodes[end_idx][0], nodes[end_idx][1],
-                        "red",
-                        3
-                    )
+                    line = create_line(nodes[start_idx][0], nodes[start_idx][1],nodes[end_idx][0], nodes[end_idx][1],"red",3)
                     shapes.append(line)
         
         # dessin des noeuds 
@@ -142,8 +138,8 @@ def main(page: ft.Page):
                     alignment=ft.alignment.Alignment(0, 0)
                 )
             )
-    graph_container.content = ft.Stack(controls=shapes, width=600, height=500) #on superpose tous les éléments créés dans notre page d'affichage
-    page.update()
+        graph_container.content = ft.Stack(controls=shapes, width=600, height=500) #on superpose tous les éléments créés dans notre page d'affichage
+        page.update()
 
     def update_callback(iter_num, current_best_path, current_pheromones):
         nonlocal iteration, best_path, pheromones
@@ -237,6 +233,7 @@ def main(page: ft.Page):
         nonlocal best_path, iteration, running
         running = False
         stop_event.set()
+        # on recrée des points et on reset des variables, boutons
         generer_nodes()
         best_path = []
         iteration = 0
@@ -247,7 +244,51 @@ def main(page: ft.Page):
         status_text.color = "green"
         start_btn.disabled = False
         stop_btn.disabled = True
-        m
         draw_graph()
+        page.update()
 
+
+    start_btn = ft.ElevatedButton("Démarrer", on_click=start_algorithm, bgcolor="green", color="white")
+    stop_btn = ft.ElevatedButton("Arrêter", on_click=stop_algorithm, bgcolor="red", color="white", disabled=True)
+    restart_btn = ft.ElevatedButton("Nouveau Graphe", on_click=restart_graph, bgcolor="blue", color="white")
+
+    # Colonne de gauche avec les paramètres
+    left_col = ft.Column([
+        ft.Text("Paramètres", size=20, weight="bold"),
+        nodes_field,
+        ants_field,
+        best_field,
+        iterations_field,
+        decay_field,
+        alpha_field,
+        beta_field,
+        ft.Divider(),
+        start_btn,
+        stop_btn,
+        restart_btn,
+        ft.Divider(),
+        status_text
+    ], width=200)
+
+    # Colonne de droite avec le graphique
+    right_col = ft.Column([
+        ft.Row([iteration_text, path_text], alignment=ft.MainAxisAlignment.SPACE_BETWEEN, width=600),
+        graph_container,
+        pheromone_text
+    ])
+
+    # on initialise
+    generer_nodes()
+    draw_graph()
+
+    # on ajoute les éléments à la page
+    page.add(
+        ft.Row(
+            [left_col, right_col],
+            vertical_alignment=ft.CrossAxisAlignment.START
+        )
+    )
+
+if __name__ == "__main__":
+    ft.app(target=main)
        

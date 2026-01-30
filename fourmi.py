@@ -21,6 +21,7 @@ class AntColony:
         total = 0
         for i in range(len(chemin) - 1):
             total += self.distances[chemin[i]][chemin[i+1]]
+        total += self.distances[chemin[-1]][chemin[0]] #pour retourner à la case départ
         return total
 
     def calculer_probabilites_mouvement(self, chemin):
