@@ -17,6 +17,10 @@ language_info:
 
 +++
 
+```{danger} 
+For our project, we chose to find the shortest cycle possible (just like the traveling salesman problem).
+```
+
 ## problem statement
 
 our goal in this activity is to implement an optimization algorithm that is an example of a *genetic algorithm*  
@@ -41,9 +45,6 @@ this latter metaphor is **a little more helpful** though in the context of the g
 ```{admonition} not *the* shortest path
 is has been shown that finding *the* shortest path is an NP-problem, so it's untractable  
 but as explained in the video, the genetic algorithm finds reasonable paths, in that they do not differ much from the optimal one
-```
-```{warning} 
-For our project, we chose to find the shortest cycle possible (just like the traveling salesman problem).
 ```
 +++
 
