@@ -11,8 +11,8 @@ class AntColony:
         self.n_meilleurs = n_meilleurs
         self.n_iterations = n_iterations
         self.decroissance = decroissance
-        self.alpha = alpha
-        self.beta = beta
+        self.alpha = alpha # importance des pheromones dans le choix
+        self.beta = beta # importance de la distance dans le choix
         self.tous_indices = range(len(distances))
         self.meilleur_chemin = None
         self.meilleure_distance = float('inf')
@@ -92,7 +92,7 @@ if __name__ == "__main__":
         [6, 3, 12, 0]
     ]
     
-    colonie_fourmis = AntColony(distances, n_fourmis=3, n_meilleurs=5, n_iterations=100, decroissance=0.95, alpha=1, beta=2) #on crée une instance de la classe
+    colonie_fourmis = AntColony(distances, n_fourmis=4, n_meilleurs=5, n_iterations=100, decroissance=0.95, alpha=1, beta=2) #on crée une instance de la classe pour tester
     
     def callback_maj(iteration, meilleur_chemin, pheromones):
         
